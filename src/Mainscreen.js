@@ -57,8 +57,10 @@ const Mainscreen = () => {
         )}
       </div>
       {showAddPopup && (
-        <div className="add-popup">
-          <Add onClose={handleCloseAddPopup} />
+        <div className="popup-background">
+          <div className="add-popup">
+            <Add onClose={handleCloseAddPopup} />
+          </div>
         </div>
       )}
     </div>
