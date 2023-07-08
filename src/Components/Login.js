@@ -52,7 +52,8 @@ const Login = () => {
       let decoded = jwt_decode(token);
 
       console.log(decode(response.data.token));
-      auth.login();
+      auth.login(response.data.token);
+
       navigate("/webapp");
     } catch (error) {
       if (

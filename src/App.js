@@ -1,18 +1,19 @@
-import React from 'react';
-import Mainscreen from './Components/Mainscreen';
+import React from "react";
+import Mainscreen from "./Components/Mainscreen";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Login from './Components/Login';
+import Login from "./Components/Login";
 import { useState } from "react";
-import AuthContext from './Context/Authcontext';
-
+import AuthContext from "./Context/Authcontext";
 
 const App = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState("false");
+const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem("Usertoken"));
 
-  const login = () => {
-    setIsLoggedIn(true);
-  };
-  console.log(isLoggedIn)
+  const login = (token) => {
+  localStorage.setItem("Usertoken", token);
+  setIsLoggedIn(true);
+};
+
+  console.log(isLoggedIn);
 
   const logout = () => {
     localStorage.removeItem("Usertoken");
@@ -23,23 +24,19 @@ const App = () => {
   if (isLoggedIn) {
     appRoutes = (
       <Routes>
-                <Route path="/" element={<Login />} />
-                <Route path="webapp" element={<Mainscreen/>} />
-
-         
-
+        <Route path="/" element={<Login />} />
+        <Route path="webapp" element={<Mainscreen />} />
       </Routes>
     );
   } else {
     appRoutes = (
       <Routes>
-                      <Route path="/" element={<Login />} />
-
+        <Route path="/" element={<Login />} />
       </Routes>
     );
   }
 
-  console.log(appRoutes)
+  console.log(appRoutes);
 
   return (
     <AuthContext.Provider
