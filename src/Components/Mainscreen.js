@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import '@fortawesome/fontawesome-free/css/all.css';
 import Add from './Add';
+import Neo4jVisualization from './Visualization';
 
 const Mainscreen = () => {
   const [queryResult, setQueryResult] = useState(null);
@@ -63,6 +64,7 @@ const Mainscreen = () => {
           </div>
         </div>
       )}
+      <Neo4jVisualization/>
     </div>
   );
 };
