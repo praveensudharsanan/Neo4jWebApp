@@ -2,8 +2,16 @@ import React, { useState } from 'react';
 import '@fortawesome/fontawesome-free/css/all.css';
 import Add from './Add';
 import Neo4jVisualization from './Visualization';
+import { useContext } from 'react';
+import AuthContext from '../Context/Authcontext';
+import { Navigate, useNavigate } from 'react-router-dom';
+
 
 const Mainscreen = () => {
+    const auth = useContext(AuthContext);
+    const navigate = useNavigate();
+
+
   const [queryResult, setQueryResult] = useState(null);
   const [showAddPopup, setShowAddPopup] = useState(false);
 
@@ -30,6 +38,15 @@ const Mainscreen = () => {
     setShowAddPopup(false);
   };
 
+  const handleLogoutClick = () => {
+    // Handle logout functionality here
+    console.log('Logout button clicked');
+    auth.logout();
+      navigate("/");
+
+
+  };
+
   return (
     <div className="container">
       <h2 className="title">Main Screen</h2>
@@ -46,6 +63,8 @@ const Mainscreen = () => {
         <button className="button" onClick={handleQueryClick}>
           <i className="fas fa-search"></i> Query
         </button>
+        <button className="btn btn-danger"onClick={handleLogoutClick}>Logout</button>
+
       </div>
       <div className="result-container">
         <h3 className="result-title">Query Result:</h3>
@@ -61,7 +80,7 @@ const Mainscreen = () => {
         <div className="popup-background">
           <div className="add-popup">
             <Add onClose={handleCloseAddPopup} />
-          </div>
+          </div>           
         </div>
       )}
       <Neo4jVisualization/>

@@ -23,7 +23,8 @@ const App = () => {
   if (isLoggedIn) {
     appRoutes = (
       <Routes>
-                <Route path="Login" element={<Login />} />
+                <Route path="/" element={<Login />} />
+                <Route path="webapp" element={<Mainscreen/>} />
 
          
 
@@ -32,7 +33,7 @@ const App = () => {
   } else {
     appRoutes = (
       <Routes>
-                      <Route path="WebApp" element={<Mainscreen/>} />
+                      <Route path="/" element={<Login />} />
 
       </Routes>
     );
