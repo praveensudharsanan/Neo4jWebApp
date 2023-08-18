@@ -5,8 +5,7 @@ import decode from "jwt-decode";
 import jwt_decode from "jwt-decode";
 import AuthContext from "../Context/Authcontext";
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { faUniversity } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+
 
 
 
@@ -69,10 +68,7 @@ const Login = () => {
   return (
     <div className="inner">
 
-    <h1>
-        <FontAwesomeIcon icon={faUniversity} />
-        &nbsp;University of Liverpool
-      </h1>
+    
       <br />
       <form onSubmit={(e) => onSubmit(e)}>
         <div>

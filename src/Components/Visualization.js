@@ -2,63 +2,57 @@ import React, { useEffect, useState } from 'react';
 import Graph from 'react-graph-vis';
 import axios from 'axios';
 import { v4 as uuidv4 } from 'uuid';
-
 const Neo4jVisualization = () => {
   const [graphData, setGraphData] = useState({ nodes: [], edges: [] });
   const [graphKey, setGraphKey] = useState(uuidv4());
-
   useEffect(() => {
     const fetchDataFromApi = async () => {
       try {
         const response = await axios.get('http://localhost:8080/test_api/neo4j_get/');
         const data = response.data.result;
-
         console.log('API Response:', data);
-
         if (!data) {
           console.error('Invalid API response:', response.data);
           return;
         }
-
         const nodes = [];
         const edges = [];
-
         data.forEach((item) => {
           const nodeId = item.identity?.low.toString();
           const labels = item.labels;
           const properties = item.properties;
-
+        
+          const node = {
+            id: nodeId,
+            label: properties.Name || labels.join(', '), // Use Name property if exists, otherwise use labels
+            title: properties.Name || labels.join(', '), // Use Name property as the title
+          };
+        
+          nodes.push(node);
+        
+          // ... (process edges if needed)
+        });
+        
+        /*data.forEach((item) => {
+          const nodeId = item.identity?.low.toString();
+          const labels = item.labels;
+          const properties = item.properties;
           const node = {
             id: nodeId,
             label: labels.join(', '),
             title: JSON.stringify(properties),
           };
-
-          nodes.push(node);
-
-          if (labels.includes('Student') && properties.studentID) {
-            const edge = {
-              from: nodeId,
-              to: properties.studentID,
-              label: 'Enrolled',
-            };
-
-            edges.push(edge);
-          }
-        });
-
+          nodes.push(node); 
+        });*/
         setGraphData({ nodes, edges });
         setGraphKey(uuidv4());
       } catch (error) {
         console.error('Error fetching data from API:', error);
       }
     };
-
     fetchDataFromApi();
   }, []);
-
   console.log('Graph Data:', graphData);
-
   const options = {
     layout: {
       hierarchical: false,
@@ -97,7 +91,6 @@ const Neo4jVisualization = () => {
       },
     },
   };
-
   return (
     <div>
       <h2>Neo4j Visualization</h2>
@@ -105,5 +98,4 @@ const Neo4jVisualization = () => {
     </div>
   );
 };
-
 export default Neo4jVisualization;
