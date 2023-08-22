@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import '@fortawesome/fontawesome-free/css/all.css';
 import Add from './Add';
+import Delete from './delete';
 import Neo4jVisualization from './Visualization';
 import { useContext } from 'react';
 import AuthContext from '../Context/Authcontext';
@@ -14,10 +15,13 @@ const Mainscreen = () => {
 
   const [queryResult, setQueryResult] = useState(null);
   const [showAddPopup, setShowAddPopup] = useState(false);
+  const [showDeletePopup, setShowDeletePopup] = useState(false);
 
   const handleAddClick = () => {
     setShowAddPopup(true);
+    
   };
+
 
   const handleUpdateClick = () => {
     // Handle update functionality here
@@ -26,6 +30,7 @@ const Mainscreen = () => {
 
   const handleDeleteClick = () => {
     // Handle delete functionality here
+    setShowDeletePopup(true);
     console.log('Delete button clicked');
   };
 
@@ -80,6 +85,13 @@ const Mainscreen = () => {
         <div className="popup-background">
           <div className="add-popup">
             <Add onClose={handleCloseAddPopup} />
+          </div>           
+        </div>
+      )}
+      {showDeletePopup && (
+        <div className="popup-background">
+          <div className="add-popup">
+            <Delete onClose={handleDeleteClick} />
           </div>           
         </div>
       )}

@@ -45,7 +45,7 @@ const Add = ({ onClose }) => {
 
   return (
     <div className="add-container">
-      <h2>Add Item</h2>
+      <h2>Add Node</h2>
       <form onSubmit={handleSubmit}>
         <div className="form-group row">
           <div className="col">
@@ -67,7 +67,7 @@ const Add = ({ onClose }) => {
             />
           </div> */}
         </div>
-        <div className="form-group">
+        {/*<div className="form-group">
           <label htmlFor="label">Label:</label>
           <select
             id="label"
@@ -81,7 +81,16 @@ const Add = ({ onClose }) => {
           </select>
         </div>
         <div className="form-group">
-          <label htmlFor="name">Name:</label>
+          <label htmlFor="name">Label Name:</label>
+          <input
+            type="text"
+            id="name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          />
+        </div>*/}
+        <div className="form-group">
+          <label htmlFor="name">Label Name:</label>
           <input
             type="text"
             id="name"
@@ -89,16 +98,8 @@ const Add = ({ onClose }) => {
             onChange={(e) => setName(e.target.value)}
           />
         </div>
-        <div className="form-group">
-          <label htmlFor="date">Date:</label>
-          <input
-            type="text"
-            id="date"
-            value={date}
-            onChange={(e) => setDate(e.target.value)}
-          />
-        </div>
-        <div className="form-group">
+        
+        {/* <div className="form-group">
           <label htmlFor="relation">Relations:</label>
           <select
             id="relation"
@@ -110,7 +111,7 @@ const Add = ({ onClose }) => {
             <option value="Relation 2">Relation 2</option>
             <option value="Relation 3">Relation 3</option>
           </select>
-        </div>
+        </div> */}
         <div className="button-group">
           <button type="submit" className="add-button">Add</button>
           <button type="button" onClick={handleCancel} className="cancel-button">Cancel</button>
