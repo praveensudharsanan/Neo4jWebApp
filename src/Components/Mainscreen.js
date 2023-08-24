@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import '@fortawesome/fontawesome-free/css/all.css';
-import Add from './Add';
+import Add from './AddPopup';
 import Delete from './delete';
 import Neo4jVisualization from './Visualization';
 import { useContext } from 'react';
 import AuthContext from '../Context/Authcontext';
 import { Navigate, useNavigate } from 'react-router-dom';
+
 
 
 const Mainscreen = () => {
@@ -32,6 +33,9 @@ const Mainscreen = () => {
     // Handle delete functionality here
     setShowDeletePopup(true);
     console.log('Delete button clicked');
+  };
+  const handleCloseDeletePopup = () => {
+    setShowDeletePopup(false); // Close the delete popup
   };
 
   const handleQueryClick = () => {
@@ -91,7 +95,7 @@ const Mainscreen = () => {
       {showDeletePopup && (
         <div className="popup-background">
           <div className="add-popup">
-            <Delete onClose={handleDeleteClick} />
+            <Delete onClose={handleCloseDeletePopup} />
           </div>           
         </div>
       )}
