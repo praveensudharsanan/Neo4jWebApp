@@ -2,48 +2,38 @@ import React, { useEffect, useState } from 'react';
 import Graph from 'react-graph-vis';
 import axios from 'axios';
 import { v4 as uuidv4 } from 'uuid';
+
 const Neo4jVisualization = () => {
   const [graphData, setGraphData] = useState({ nodes: [], edges: [] });
   const [graphKey, setGraphKey] = useState(uuidv4());
+  const [selectedNodeProperties, setSelectedNodeProperties] = useState(null);
+
   useEffect(() => {
     const fetchDataFromApi = async () => {
       try {
         const response = await axios.get('http://localhost:8080/test_api/neo4j_get/');
         const data = response.data.result;
-        console.log('API Response:', data);
-        if (!data) {
-          console.error('Invalid API response:', response.data);
-          return;
-        }
+        
         const nodes = [];
         const edges = [];
+        
         data.forEach((item) => {
           const nodeId = item.identity?.low.toString();
           const labels = item.labels;
           const properties = item.properties;
-        
+          
           const node = {
             id: nodeId,
-            label: properties.Name || labels.join(', '), // Use Name property if exists, otherwise use labels
-            title: properties.Name || labels.join(', '), // Use Name property as the title
+            label: properties.Name || labels.join(', '),
+            title: properties.Name || labels.join(', '),
           };
-        
+          
           nodes.push(node);
-        
-          // ... (process edges if needed)
+          
+          // Process edges if needed and add them to the edges array
+          // ...
         });
         
-        /*data.forEach((item) => {
-          const nodeId = item.identity?.low.toString();
-          const labels = item.labels;
-          const properties = item.properties;
-          const node = {
-            id: nodeId,
-            label: labels.join(', '),
-            title: JSON.stringify(properties),
-          };
-          nodes.push(node); 
-        });*/
         setGraphData({ nodes, edges });
         setGraphKey(uuidv4());
       } catch (error) {
@@ -52,7 +42,7 @@ const Neo4jVisualization = () => {
     };
     fetchDataFromApi();
   }, []);
-  console.log('Graph Data:', graphData);
+
   const options = {
     layout: {
       hierarchical: false,
@@ -91,11 +81,44 @@ const Neo4jVisualization = () => {
       },
     },
   };
+
+  const events = {
+    select: function(event) {
+      const { nodes } = event;
+      if (nodes.length > 0) {
+        const selectedNode = graphData.nodes.find(node => node.id === nodes[0]);
+        if (selectedNode) {
+          console.log('Selected Node:', selectedNode);
+          setSelectedNodeProperties(selectedNode.properties);
+          
+          // Handle displaying node properties or other actions here
+        }
+      }
+    }
+  };
+
   return (
     <div>
       <h2>Neo4j Visualization</h2>
-      <Graph key={graphKey} graph={graphData} options={options} style={{ height: '500px' }} />
+      <Graph
+        key={graphKey}
+        graph={graphData}
+        options={options}
+        events={events}
+        style={{ height: '500px' }}
+      />
+      
+      {selectedNodeProperties && (
+    <div className="selected-node-properties" style={{ border: '1px solid red', background: 'white' }}>
+      <h3>Selected Node Properties:</h3>
+      <pre>{JSON.stringify(selectedNodeProperties, null, 2)}</pre>
     </div>
+  
+  )}
+  
+</div>
+    
   );
 };
+
 export default Neo4jVisualization;

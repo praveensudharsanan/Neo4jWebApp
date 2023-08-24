@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import '@fortawesome/fontawesome-free/css/all.css';
 import '../App.css';
+import axios from 'axios';
 
 
 const AddPopup = ({ onClose }) => {
@@ -8,20 +9,34 @@ const AddPopup = ({ onClose }) => {
   const [label, setLabel] = useState('');
   const [propertyFields, setPropertyFields] = useState([{ key: '', value: '' }]);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Perform your add logic here with the form data and properties
-    console.log('Form submitted:', {
-      custom,
+
+    // Prepare data for sending to the backend
+    const dataToSend = {
       label,
-      properties: propertyFields,
-    });
-    // Reset the form fields
-    setCustom(false);
-    setLabel('');
-    setPropertyFields([{ key: '', value: '' }]);
-    // Close the pop-up
-    onClose();
+      properties: propertyFields.reduce((acc, property) => {
+        if (property.key && property.value) {
+          acc[property.key] = property.value;
+        }
+        return acc;
+      }, {}),
+    };
+
+    try {
+      // Send the data to your backend API using Axios
+      const response = await axios.post('http://localhost:8080/test_api/create_node', dataToSend);
+      console.log('Add response:', response.data);
+
+      // Reset the form fields
+      setCustom(false);
+      setLabel('');
+      setPropertyFields([{ key: '', value: '' }]);
+      // Close the pop-up
+      onClose();
+    } catch (error) {
+      console.error('Error adding data:', error);
+    }
   };
 
   const handleCancel = () => {
