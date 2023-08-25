@@ -13,27 +13,42 @@ const Neo4jVisualization = () => {
       try {
         const response = await axios.get('http://localhost:8080/test_api/neo4j_get/');
         const data = response.data.result;
-        
+
         const nodes = [];
         const edges = [];
-        
+
         data.forEach((item) => {
-          const nodeId = item.identity?.low.toString();
-          const labels = item.labels;
-          const properties = item.properties;
-          
-          const node = {
-            id: nodeId,
-            label: properties.Name || labels.join(', '),
-            title: properties.Name || labels.join(', '),
-          };
-          
-          nodes.push(node);
-          
-          // Process edges if needed and add them to the edges array
-          // ...
+          const nodeData = item.node;
+          if (nodeData) {
+            const nodeId = nodeData.identity[0]?.low.toString();
+            const labels = nodeData.labels[0];
+            const properties = nodeData.properties;
+
+            const node = {
+              id: nodeId,
+              label: properties.Name || labels,
+              title: properties.Name || labels,
+              properties: properties,
+            };
+
+            nodes.push(node);
+          }
+
+          const relationshipData = item.relationship;
+          if (relationshipData) {
+            const relationship = relationshipData;
+            const edge = {
+              id: relationship.identity[0]?.low.toString(),
+              from: relationship.start[0]?.low.toString(),
+              to: relationship.end[0]?.low.toString(),
+              label: relationship.type,
+              properties: relationship.properties,
+            };
+
+            edges.push(edge);
+          }
         });
-        
+
         setGraphData({ nodes, edges });
         setGraphKey(uuidv4());
       } catch (error) {
@@ -45,7 +60,7 @@ const Neo4jVisualization = () => {
 
   const options = {
     layout: {
-      hierarchical: false,
+      hierarchical: false, // Adjust this based on your data
     },
     nodes: {
       shape: 'circle',
@@ -59,42 +74,29 @@ const Neo4jVisualization = () => {
       arrows: {
         to: { enabled: true, scaleFactor: 0.5 },
       },
+      smooth: {
+        type: 'dynamic', // Adjust this for edge smoothness
+      },
     },
     physics: {
       enabled: true,
-      solver: 'forceAtlas2Based',
-      forceAtlas2Based: {
-        gravitationalConstant: -300,
-        centralGravity: 0.02,
-        springLength: 100,
-        springConstant: 0.08,
-        avoidOverlap: 1,
-      },
-      maxVelocity: 146,
-      timestep: 0.35,
-      stabilization: {
-        enabled: true,
-        iterations: 200,
-        updateInterval: 10,
-        onlyDynamicEdges: false,
-        fit: true,
-      },
+      solver: 'forceAtlas2Based', // Experiment with different solvers
+      // Other physics settings
     },
   };
 
   const events = {
-    select: function(event) {
+    select: function (event) {
       const { nodes } = event;
       if (nodes.length > 0) {
-        const selectedNode = graphData.nodes.find(node => node.id === nodes[0]);
+        const selectedNode = graphData.nodes.find((node) => node.id === nodes[0]);
         if (selectedNode) {
-          console.log('Selected Node:', selectedNode);
           setSelectedNodeProperties(selectedNode.properties);
-          
-          // Handle displaying node properties or other actions here
         }
+      } else {
+        setSelectedNodeProperties(null); // Deselect when clicking on empty space
       }
-    }
+    },
   };
 
   return (
@@ -107,17 +109,13 @@ const Neo4jVisualization = () => {
         events={events}
         style={{ height: '500px' }}
       />
-      
       {selectedNodeProperties && (
-    <div className="selected-node-properties" style={{ border: '1px solid red', background: 'white' }}>
-      <h3>Selected Node Properties:</h3>
-      <pre>{JSON.stringify(selectedNodeProperties, null, 2)}</pre>
+        <div className="selected-node-properties" style={{ border: '1px solid red', background: 'white' }}>
+          <h3>Selected Node Properties:</h3>
+          <pre>{JSON.stringify(selectedNodeProperties, null, 2)}</pre>
+        </div>
+      )}
     </div>
-  
-  )}
-  
-</div>
-    
   );
 };
 
